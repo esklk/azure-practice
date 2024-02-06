@@ -1,47 +1,58 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using AZP.InputFileProcessing.Function.Models;
-using Microsoft.Azure.WebJobs;
+using AZP.DataModels;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace AZP.InputFileProcessing.Function
 {
-    public static class Function
+    public class Function
     {
-        [FunctionName("Function")]
-        public static async Task Run(
-            [BlobTrigger("input-files/{inputBlobName}", Connection = "StorageConnectionString")]Stream data,
-            string inputBlobName,
-            [CosmosDB("azp-data", "users", Connection = "CosmosDbConnectionString")]IAsyncCollector<dynamic> documentsOut,
-            ILogger log)
+        private const string OutputDatabaseName = "azp-data";
+        private const string OutputContainerName = "employments";
+
+        private readonly CosmosClient _cosmosClient;
+        private readonly ILogger<Function> _logger;
+
+        public Function(CosmosClient cosmosClient, ILogger<Function> logger)
         {
-            using (log.BeginScope("Processing file: {InputBlobName}", inputBlobName))
+            _cosmosClient = cosmosClient;
+            _logger = logger;
+        }
+
+        [Function(nameof(Function))]
+        public async Task Run([BlobTrigger(
+                blobPath: "input-files/{inputBlobName}",
+                Connection = "StorageConnectionString")]
+            Stream inputStream,
+            string inputBlobName)
+        {
+            using (_logger.BeginScope("Processing file: {InputBlobName}", inputBlobName))
             {
-                var inputUsers = await GetInputUsers(data, log);
-                if (!inputUsers.Any())
+                var source = await ExtractSourceData(inputStream);
+                _logger.LogInformation("Employment entries extracted: {ExtractedEntriesCount}.", source.Length);
+                if (!source.Any())
                 {
-                    log.LogWarning("No users in the file.");
+                    return;
                 }
 
-                foreach (var inputUser in inputUsers)
-                {
-                    try
-                    {
-                        await documentsOut.AddAsync(inputUser);
-                        log.LogInformation("User {UserId} successfully saved.", inputUser.Id);
-                    }
-                    catch (Exception ex)
-                    {
-                        log.LogError(ex, "User save failed: {Reason}.", ex.Message);
-                    }
-                }
+                var container = _cosmosClient.GetContainer(OutputDatabaseName, OutputContainerName);
+
+                await Task.WhenAll(source.Select(update => container.UpsertItemAsync(
+                    new EmploymentStoredRecord(
+                        Guid.NewGuid().ToString(),
+                        DateTime.UtcNow,
+                        update.Employee,
+                        update.Company,
+                        update.Email,
+                        update.Phone,
+                        update.Title))));
+
+                _logger.LogInformation("Employees successfully saved.");
             }
         }
 
-        private static async Task<User[]> GetInputUsers(Stream inputStream, ILogger log)
+        private async Task<EmploymentRecordUpdate[]> ExtractSourceData(Stream inputStream)
         {
             try
             {
@@ -51,11 +62,11 @@ namespace AZP.InputFileProcessing.Function
                     inputText = await streamReader.ReadToEndAsync();
                 }
 
-                return JsonConvert.DeserializeObject<User[]>(inputText);
+                return JsonConvert.DeserializeObject<EmploymentRecordUpdate[]>(inputText) ?? Array.Empty<EmploymentRecordUpdate>();
             }
             catch (JsonException ex)
             {
-                log.LogError("Deserialization failed: {Reason}", ex.Message);
+                _logger.LogError("Deserialization failed: {Reason}", ex.Message);
                 throw;
             }
         }

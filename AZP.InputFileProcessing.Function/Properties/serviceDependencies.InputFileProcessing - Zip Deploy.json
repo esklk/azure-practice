@@ -11,7 +11,7 @@
       "connectionId": "AzureWebJobsStorage"
     },
     "secrets2": {
-      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/InputFileProcessing/providers/Microsoft.ServiceLinker/linkers/VaultUri_0FACEF07BD",
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/InputFileProcessing/providers/Microsoft.ServiceLinker/linkers/VaultUri_0FACEF07BD",
       "secretStore": "AzureAppSettings",
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/esklk-azp-kv",
       "type": "secrets.keyVault",
@@ -19,19 +19,11 @@
       "dynamicId": null
     },
     "storage2": {
-      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/InputFileProcessing/providers/Microsoft.ServiceLinker/linkers/StorageConnectionString_464C5CE897, /subscriptions/2281e5a7-3479-4e5b-a44f-b2b99b8b2803/resourcegroups/AzurePractice/providers/Microsoft.Web/sites/InputFileProcessing/providers/Microsoft.ServiceLinker/linkers/StorageConnectionString_A362428FF6",
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/InputFileProcessing/providers/Microsoft.ServiceLinker/linkers/StorageConnectionString_464C5CE897, /subscriptions/2281e5a7-3479-4e5b-a44f-b2b99b8b2803/resourceGroups/AzurePractice/providers/Microsoft.Web/sites/InputFileProcessing/providers/Microsoft.ServiceLinker/linkers/StorageConnectionString_A362428FF6",
       "secretStore": "AzureKeyVault",
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/esklkazpstorage",
       "type": "storage.azure",
       "connectionId": "StorageConnectionString",
-      "dynamicId": null
-    },
-    "cosmosdb1": {
-      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/InputFileProcessing/providers/Microsoft.ServiceLinker/linkers/CosmosDbConnectionString_4E1A1C1926",
-      "secretStore": "AzureKeyVault",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.DocumentDB/databaseAccounts/esklk-azp-cdb",
-      "type": "cosmosdb.azure",
-      "connectionId": "CosmosDbConnectionString",
       "dynamicId": null
     }
   }
