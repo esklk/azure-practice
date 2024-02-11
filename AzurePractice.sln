@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AZP.DataDecomposition.Funct
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AZP.InputFileProcessing.Function", "AZP.InputFileProcessing.Function\AZP.InputFileProcessing.Function.csproj", "{40757E35-2615-4E4C-AB27-AA19662910BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AZP.Dummy.Function", "AZP.Dummy.Function\AZP.Dummy.Function.csproj", "{58967396-9CEB-46CC-B622-B85BC0F62465}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AZP.Dummy.Function", "AZP.Dummy.Function\AZP.Dummy.Function.csproj", "{58967396-9CEB-46CC-B622-B85BC0F62465}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
